@@ -10,7 +10,7 @@ resource "aws_vpc" "g1-vpc-01" {
 resource "aws_subnet" "g1-pub-sub-01" {
   vpc_id            = aws_vpc.g1-vpc-01.id
   cidr_block        = "10.0.1.0/24"
-  availability_zone = "ap-southeast-1a"
+  availability_zone = local.az_a
   tags = {
     Name = "g1-pub-sub-01"
   }
@@ -20,7 +20,7 @@ resource "aws_subnet" "g1-pub-sub-01" {
 resource "aws_subnet" "g1-pri-dev-sub-01" {
   vpc_id            = aws_vpc.g1-vpc-01.id
   cidr_block        = "10.0.10.0/24"
-  availability_zone = "ap-southeast-1a"
+  availability_zone = local.az_a
   tags = {
     Name = "g1-pri-dev-sub-01"
   }
@@ -29,7 +29,7 @@ resource "aws_subnet" "g1-pri-dev-sub-01" {
 resource "aws_subnet" "g1-pri-db-sub-01" {
   vpc_id            = aws_vpc.g1-vpc-01.id
   cidr_block        = "10.0.20.0/24"
-  availability_zone = "ap-southeast-1a"
+  availability_zone = local.az_a
   tags = {
     Name = "g1-pri-db-sub-01"
   }
@@ -38,7 +38,7 @@ resource "aws_subnet" "g1-pri-db-sub-01" {
 resource "aws_subnet" "g1-pri-dev-sub-02" {
   vpc_id            = aws_vpc.g1-vpc-01.id
   cidr_block        = "10.0.30.0/24"
-  availability_zone = "ap-southeast-1a"
+  availability_zone = local.az_a
   tags = {
     Name = "g1-pri-dev-sub-02"
   }
@@ -116,6 +116,39 @@ resource "aws_route_table_association" "route-table-association-pri-db" {
   route_table_id = aws_route_table.g1-pri-rt-01.id
 }
 
+# # 보안그룹
+# #기본 생성 방식
+# resource "aws_security_group" "sg-pub" {
+#   vpc_id      = module.vpc.vpc_id  #생성할 위치의 VPC ID
+#   name        = "WEB"              #그룹 이름
+#   description = "Terraform WEB SG" #설명
+#   ingress {
+#     from_port   = 22            #인바운드 시작 포트
+#     to_port     = 22            #인바운드 끝나는 포트
+#     protocol    = "tcp"         #사용할 프로토콜
+#     cidr_blocks = ["0.0.0.0/0"] #허용할 IP 범위
+#   }
+#   ingress {
+#     from_port   = 80
+#     to_port     = 80
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+#   ingress {
+#     from_port   = 443
+#     to_port     = 443
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+#   egress {
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+# }
+
+
 
 # # 개발환경
 # module "default_custome_vpc" {
@@ -134,5 +167,4 @@ resource "aws_route_table_association" "route-table-association-pri-db" {
 #   source   = "./custom_vpc"
 #   env      = "personal_${each.key}"
 # }
-
 
